@@ -9,6 +9,9 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import pymysql
+
+pymysql.install_as_MySQLdb()
 
 from pathlib import Path
 
@@ -76,9 +79,15 @@ WSGI_APPLICATION = 'crochet_inventory_system.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'inventory',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': '',
+        
     }
 }
+
 
 
 # Password validation
