@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
+import uuid
 from django.contrib.auth.models import Group, Permission
 
 class UserManager(BaseUserManager):
@@ -19,7 +20,9 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     full_name = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
@@ -29,8 +32,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
-    # groups = models.ManyToManyField(Group, related_name="custom_user_groups", blank=True)
-    # user_permissions = models.ManyToManyField(Permission, related_name="custom_user_permissions", blank=True)
+    groups = models.ManyToManyField(Group, related_name="custom_user_groups", blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name="custom_user_permissions", blank=True)
 
     objects = UserManager()
 
@@ -43,5 +46,3 @@ class User(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         super(User, self).save(*args, **kwargs)
-
-
