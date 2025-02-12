@@ -17,5 +17,6 @@ class IsSuperuserOrAdmin(BasePermission):
     Custom permission to allow access only to superusers or staff.
     """
     def has_permission(self, request, view):
-        if  request.user.is_superuser or request.user.is_staff :
-            raise AuthenticationFailed(detail="You do not have permission to access", code=403)
+        if not request.user.is_superuser or request.user.is_staff :
+            raise AuthenticationFailed(detail="You do not have permission to access", code=401)
+        return True

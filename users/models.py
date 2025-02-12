@@ -4,6 +4,7 @@ from django.utils import timezone
 import uuid
 from django.contrib.auth.models import Group, Permission
 
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -18,15 +19,30 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         return self.create_user(email, password, **extra_fields)
+    
+    
 
 class User(AbstractBaseUser, PermissionsMixin):
+    def user_profile_pic_path(instance, filename):
+        """
+        Function to define the upload path for user profile pictures.
+        Example: media/profile_pics/user_1/profile.jpg
+        """
+        return f'profile_pics/user_{instance.id}/{filename}'
+    
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     full_name = models.CharField(max_length=255)
-    username = models.CharField(max_length=255, blank=True, null=True)
+    username = models.CharField(max_length=255, default='')
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, default='')
     address = models.TextField()
+    profile_pic = models.ImageField(
+        upload_to=user_profile_pic_path,  # Path where images will be stored
+        default='',  # Default profile picture
+        blank=True, 
+        null=True
+    )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -46,3 +62,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         super(User, self).save(*args, **kwargs)
+
