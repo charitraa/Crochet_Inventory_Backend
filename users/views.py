@@ -12,7 +12,7 @@ class UserDetails(APIView):
     """
     Admin view for user to get details, update, and delete
     """
-    permission_classes = [IsSuperuserOrAdmin, LoginRequiredPermission]
+    permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
 
     def get(self, request, pk, format=None):
         try:
@@ -43,7 +43,8 @@ class UserDetails(APIView):
     
 class UserCreate(APIView):
     """ Admin Create a new user"""
-    permission_classes = [IsSuperuserOrAdmin, LoginRequiredPermission]
+    permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
+
 
     def post(self, request, format=None):
         serializer = UserCreateSerializer(data=request.data)
