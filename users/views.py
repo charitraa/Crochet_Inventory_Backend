@@ -2,29 +2,49 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import User
-from rest_framework.permissions import IsAuthenticated , IsAdminUser
-from .serializers import UserCreateSerializer, UserUpdateSerializer
+from rest_framework.permissions import IsAuthenticated
+from .serializers import UserCreateSerializer, UserUpdateSerializer, UserSerializer
 from permissions.permissions import LoginRequiredPermission, IsSuperuserOrAdmin
 
+# user view for admin
+
 class UserDetails(APIView):
-    permission_classes = [IsSuperuserOrAdmin]
-    def get(self,pk, format=None):
-        users = User.objects.get(pk=pk)
-        serializer = UserCreateSerializer(users, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    def put(self, request, pk, format=None):
+    """
+    Admin view for user to get details, update, and delete
+    """
+    permission_classes = [IsSuperuserOrAdmin, LoginRequiredPermission]
+
+    def get(self, request, pk, format=None):
+        try:
+            user = User.objects.get(pk=pk)
+            serializer = UserSerializer(user)  # many=True removed, since it's a single object
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, pk, format=None): 
+        try:
             user = User.objects.get(pk=pk)
             serializer = UserUpdateSerializer(user, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response({'message': 'User data updated successfully', 'data': serializer.data})
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    def delete(self, pk, format=None):
-        user = User.objects.get(pk=pk)
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk, format=None):
+        try:
+            user = User.objects.get(pk=pk)
+            user.delete()
+            return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
     
 class UserCreate(APIView):
+    """ Admin Create a new user"""
+    permission_classes = [IsSuperuserOrAdmin, LoginRequiredPermission]
+
     def post(self, request, format=None):
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -33,19 +53,12 @@ class UserCreate(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-# user view for admin
-class UserList(APIView):
+class UserMeView(APIView):
+    permission_classes = [LoginRequiredPermission]
+
     def get(self, request, format=None):
         users = User.objects.all()
-        serializer = UserCreateSerializer(users, many=True)
+        serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
-    def put(self, request, pk, format=None):
-            user = User.objects.get(pk=pk)
-            serializer = UserUpdateSerializer(user, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class AdminUserDetails(APIView):
-#      permission_classes = [LoginRequiredPermission]
+

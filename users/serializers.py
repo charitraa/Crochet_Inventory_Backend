@@ -46,15 +46,15 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name']
+        fields = [ 'username', 'full_name', 'phone_number', 'address']
         
     def update(self, instance, validated_data):
         """
          update and return instance data of users.
         """
         instance.username = validated_data.get('username', instance.username)
-        instance.email = validated_data.get('email', instance.email)
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.full_name = validated_data.get('full_name', instance.full_name)
+        instance.address = validated_data.get('address', instance.address)
         instance.save()
         return instance
