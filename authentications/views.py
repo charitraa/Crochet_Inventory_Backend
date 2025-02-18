@@ -67,10 +67,8 @@ class GetUserDataView(APIView):
     permission_classes = [LoginRequiredPermission]
 
     def get(self, request, *args, **kwargs):
-        # ✅ Correct way to get authenticated user ID
-        token = request.COOKIES.get('access_token')  # Django stores user ID here
+        token = request.COOKIES.get('access_token')
 
-         # Manually authenticate user using JWT
         auth = JWTAuthentication()
         validated_token = auth.get_validated_token(token)
         user = auth.get_user(validated_token)
