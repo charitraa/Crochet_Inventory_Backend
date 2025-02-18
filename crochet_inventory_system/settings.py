@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'users',
+    'products',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,8 @@ import os
 
 MEDIA_URL = '/media/'  # URL to access media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory to store uploaded images
+
+
+CSRF_COOKIE_SECURE = True  # Set to False for local development
+SESSION_COOKIE_SECURE = True
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"

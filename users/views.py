@@ -54,9 +54,8 @@ class UserCreate(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-class UserMeView(APIView):
-    permission_classes = [LoginRequiredPermission]
-
+class UserListView(APIView):
+    permission_classes = [LoginRequiredPermission,IsSuperuserOrAdmin]
     def get(self, request, format=None):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
