@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from permissions.permissions import LoginRequiredPermission
-from users.serializers import UserCreateSerializer, UserSerializer
+from users.serializers import UserCreateSerializer, UserSerializer, UserUpdateSerializer
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -84,3 +84,49 @@ class GetUserDataView(APIView):
             }, status=200)
         except User.DoesNotExist:
             return Response({"message": "User not found"}, status=404)
+        
+
+class UpdateUserView(APIView):
+    permission_classes = [LoginRequiredPermission]
+
+    def put(self, request, *args, **kwargs):
+        token = request.COOKIES.get('access_token')
+
+        if not token:
+            return Response({"message": "Access token missing"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        auth = JWTAuthentication()
+        try:
+            validated_token = auth.get_validated_token(token)
+            user = auth.get_user(validated_token)
+        except Exception as e:
+            return Response({"message": "Invalid or expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = UserUpdateSerializer(user, data=request.data, partial=True)  # Allow partial updates
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User updated successfully", "data": serializer.data}, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserLogoutView(APIView):
+    permission_classes = [LoginRequiredPermission]
+
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get('refresh_token')
+
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                token.blacklist()  # Blacklist the refresh token
+            except Exception:
+                return Response({"message": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Remove tokens from cookies
+        response = Response({"message": "User logged out successfully"}, status=status.HTTP_200_OK)
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+
+        return response

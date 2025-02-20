@@ -65,18 +65,18 @@ class AddProductSerializer(serializers.ModelSerializer):
         )
         return product
   
-# class ProductUpdateSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Product
-#         fields = ['id', 'productName','description','stock','price']
+class ProductUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'productName','description','stock','price']
         
-#     def update(self, instance, validated_data):
-#         """
-#           update and return instance data of products.
-#         """
-#         instance.username = validated_data.get('username', instance.username)
-#         instance.phone_number = validated_data.get('phone_number', instance.phone_number)
-#         instance.full_name = validated_data.get('full_name', instance.full_name)
-#         instance.address = validated_data.get('address', instance.address)
-#         instance.save()
-#         return instance
+    def update(self, instance, validated_data):
+        """
+          update and return instance data of products.
+        """
+        instance.productName = validated_data.get('productName', instance.productName)
+        instance.description = validated_data.get('description', instance.description)
+        instance.stock = validated_data.get('stock', instance.stock)
+        instance.price = validated_data.get('price', instance.price)
+        instance.save()
+        return instance
