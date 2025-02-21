@@ -29,7 +29,20 @@ class AddCategorySerializer(serializers.ModelSerializer):
             
         )
         return category
-
+    
+class CategoryUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name']
+        
+    def update(self, instance, validated_data):
+        """
+          update and return instance data of category.
+        """
+        instance.name = validated_data.get('name', instance.name)
+        instance.save()
+        return instance
+    
 class ProductSerializer(serializers.ModelSerializer):
     """
     Serializer for view Category details.
