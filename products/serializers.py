@@ -45,16 +45,16 @@ class CategoryUpdateSerializer(serializers.ModelSerializer):
     
 class ProductSerializer(serializers.ModelSerializer):
     """
-    Serializer for view Category details.
+    Serializer for view Products details.
     """
     class Meta:
-        model = Category
+        model = Product
         fields ='__all__'
 
 
 class AddProductSerializer(serializers.ModelSerializer):
     """
-    Serializer for Categories create or add.
+    Serializer for products create or add.
     """
     productName = serializers.CharField(required=True)
     description = serializers.CharField(required=True)
@@ -69,7 +69,7 @@ class AddProductSerializer(serializers.ModelSerializer):
         """
          Create and return a new product with the validated data.
         """
-        product = Category.objects.create(
+        product = Product.objects.create(
             productName=validated_data['productName'],
             description=validated_data['description'],
             price=validated_data['price'],
