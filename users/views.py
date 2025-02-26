@@ -44,7 +44,6 @@ class UserCreate(APIView):
     """ Admin Create a new user"""
     permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
 
-
     def post(self, request, format=None):
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
