@@ -37,9 +37,7 @@ class LoginView(TokenObtainPairView):
             response.set_cookie(
             key="access_token",
             value=str(access_token),
-            httponly=True,  # Prevent JavaScript access (security)
-            secure=True,  # Use HTTPS
-            samesite="Lax", 
+            
             )
             return response
 

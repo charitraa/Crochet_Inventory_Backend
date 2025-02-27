@@ -161,3 +161,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory to store uploaded imag
 CSRF_COOKIE_SECURE = True  # Set to False for local development
 SESSION_COOKIE_SECURE = True
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_HTTPONLY = True
+CORS_ALLOW_CREDENTIALS = True
