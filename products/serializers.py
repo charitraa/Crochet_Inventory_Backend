@@ -60,9 +60,11 @@ class AddProductSerializer(serializers.ModelSerializer):
     description = serializers.CharField(required=True)
     price = serializers.DecimalField(required=True, max_digits=10, decimal_places=2)
     stock = serializers.IntegerField(required=True)
+    image = serializers.ImageField(required=False, allow_null=True)
+    
     class Meta:
         model = Product
-        fields = ['id', 'productName','description','stock','price','category']
+        fields = ['id', 'productName','description','stock','price','category','image']
         
 
     def create(self, validated_data):
@@ -74,6 +76,7 @@ class AddProductSerializer(serializers.ModelSerializer):
             description=validated_data['description'],
             price=validated_data['price'],
             stock=validated_data['stock'],
+            image = validated_data['image'],
             category=validated_data['category']
         )
         return product
