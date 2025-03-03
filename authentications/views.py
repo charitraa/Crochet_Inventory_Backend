@@ -1,66 +1,66 @@
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate, get_user_model
 from permissions.permissions import LoginRequiredPermission
 from users.serializers import UserCreateSerializer, UserSerializer, UserUpdateSerializer
-from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.authentication import JWTAuthentication
-
 
 
 class LoginView(TokenObtainPairView):
     """
-    Custom view for user login to get access and refresh tokens.
+    View for user login to obtain access and refresh tokens.
     """
     def post(self, request, *args, **kwargs):
-        # You can add additional logic here if needed for custom login
         email = request.data.get("email")
         password = request.data.get("password")
 
-        # Authenticate the user
+        # Authenticate user
         user = authenticate(email=email, password=password)
         user_serializer = UserSerializer(user)
+
         if user is not None:
-            # Generate tokens
+            # Generate access and refresh tokens
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
-            response  = Response({
-                'message':'Login sucessfull',
-                'data':user_serializer.data,
+
+            response = Response({
+                'message': 'Login successful',
+                'data': user_serializer.data,
                 'access': str(access_token),
                 'refresh': str(refresh),
             }, status=status.HTTP_200_OK)
 
+            # Set access token in cookies
             response.set_cookie(
-            key="access_token",
-            value=str(access_token),
-            
+                key="access_token",
+                value=str(access_token),
             )
             return response
 
         return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
+
 class CreateUserView(APIView):
     """
-    Custom view for user registration.
+    View for user registration.
     """
     def post(self, request, *args, **kwargs):
-        # You can add additional logic here if needed for custom registration
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 User = get_user_model()
 
-class GetUserDataView(APIView):
 
+class GetUserDataView(APIView):
     """
-    View to get the logged-in user's own data from the session.
+    View to retrieve the logged-in user's data.
     """
     permission_classes = [LoginRequiredPermission]
 
@@ -75,16 +75,19 @@ class GetUserDataView(APIView):
             return Response({"message": "Invalid token"}, status=401)
 
         try:
-            userData = UserSerializer(user)
+            user_data = UserSerializer(user)
             return Response({
-                'data': userData.data,
+                'data': user_data.data,
                 "message": "User data retrieved successfully"
             }, status=200)
         except User.DoesNotExist:
             return Response({"message": "User not found"}, status=404)
-        
+
 
 class UpdateUserView(APIView):
+    """
+    View to update user details.
+    """
     permission_classes = [LoginRequiredPermission]
 
     def put(self, request, *args, **kwargs):
@@ -97,19 +100,23 @@ class UpdateUserView(APIView):
         try:
             validated_token = auth.get_validated_token(token)
             user = auth.get_user(validated_token)
-        except Exception as e:
+        except Exception:
             return Response({"message": "Invalid or expired token"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        serializer = UserUpdateSerializer(user, data=request.data, partial=True)  # Allow partial updates
+        # Allow partial updates
+        serializer = UserUpdateSerializer(user, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "User updated successfully", "data": serializer.data}, status=status.HTTP_200_OK)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLogoutView(APIView):
+    """
+    View to log out the user and blacklist the refresh token.
+    """
     permission_classes = [LoginRequiredPermission]
 
     def post(self, request, *args, **kwargs):

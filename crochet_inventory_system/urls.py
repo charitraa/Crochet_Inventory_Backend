@@ -24,7 +24,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('users.urls')),
     path('product/', include('products.urls')),
+    path('category/', include('category.urls')),
     path('auth/', include('authentications.urls')),
+    path('color/', include('colors.urls')),
+    path('size/', include('sizes.urls')),
     path('', RouterDetailsView.as_view(), name='router_details'),
 
     
