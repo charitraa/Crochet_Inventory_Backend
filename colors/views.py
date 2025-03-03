@@ -10,8 +10,8 @@ class ColorView(APIView):
     """ Admin view and create colors list """
     permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
     def get(self, request, format=None):
-        products = ColorType.objects.all()
-        serializer = ColorTypeSerializer(products, many=True)
+        colors = ColorType.objects.all()
+        serializer = ColorTypeSerializer(colors, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
