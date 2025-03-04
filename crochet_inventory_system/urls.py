@@ -28,6 +28,7 @@ urlpatterns = [
     path('auth/', include('authentications.urls')),
     path('color/', include('colors.urls')),
     path('size/', include('sizes.urls')),
+    path('material/', include('materials.urls')),
     path('', RouterDetailsView.as_view(), name='router_details'),
 
     

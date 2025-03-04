@@ -24,11 +24,11 @@ class AddMaterialSerializer(serializers.ModelSerializer):
         """
          Create and return a new Material with the validated data.
         """
-        Material = Material.objects.create(
+        material = Material.objects.create(
             name=validated_data['name'],
             
         )
-        return Material
+        return material
     
 class MaterialUpdateSerializer(serializers.ModelSerializer):
     class Meta:
