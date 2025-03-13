@@ -25,16 +25,16 @@ class MaterialViewById(MaterialView):
     permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
     def get(self, request, pk, format=None):
         try:
-            Material = Material.objects.get(pk=pk)
-            serializer = MaterialSerializer(Material)
+            material = Material.objects.get(pk=pk)
+            serializer = MaterialSerializer(material)
             return Response(serializer.data)
         except Material.DoesNotExist:
             return Response({"error": "Material not found"}, status=status.HTTP_404_NOT_FOUND)
     
     def put(self, request, pk, format=None):
         try:
-            Material = Material.objects.get(pk=pk)
-            serializer = MaterialUpdateSerializer(Material, data=request.data)
+            material = Material.objects.get(pk=pk)
+            serializer = MaterialUpdateSerializer(material, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -43,8 +43,8 @@ class MaterialViewById(MaterialView):
             return Response({"error": "Material not found"}, status=status.HTTP_404_NOT_FOUND)
     def delete(self, request, pk, format=None):
         try:
-            Material = Material.objects.get(pk=pk)
-            Material.delete()
+            material = Material.objects.get(pk=pk)
+            material.delete()
             return Response({"message": "Material deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         except Material.DoesNotExist:
             return Response({"error": "Material not found"}, status=status.HTTP_404_NOT_FOUND)
