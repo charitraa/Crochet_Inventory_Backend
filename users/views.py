@@ -57,7 +57,7 @@ class UserListView(APIView):
     """ Admin view a user list """
     permission_classes = [LoginRequiredPermission,IsSuperuserOrAdmin]
     def get(self, request, format=None):
-        users = User.objects.all()
+        users = User.objects.filter(is_superuser=False)
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 

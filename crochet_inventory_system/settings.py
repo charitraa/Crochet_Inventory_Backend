@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'materials',
     'colors',
     'sizes',
+    'orders',
 ]
 
 MIDDLEWARE = [
