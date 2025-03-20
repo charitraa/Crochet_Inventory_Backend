@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import User
-from .serializers import  UserUpdateSerializer, UserSerializer, AddUserSerializer
+from .serializers import  UserUpdateSerializer, UserSerializer, AdminAddUserSerializer
 
 from permissions.permissions import LoginRequiredPermission, IsSuperuserOrAdmin
 
@@ -46,7 +46,7 @@ class UserCreate(APIView):
     permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
 
     def post(self, request, format=None):
-        serializer = AddUserSerializer(data=request.data)
+        serializer = AdminAddUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

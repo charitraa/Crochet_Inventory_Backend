@@ -50,6 +50,19 @@ INSTALLED_APPS = [
     'colors',
     'sizes',
     'orders',
+    'beads_size',
+    'beads_type',
+    'glue_type',
+    'ribbon_type',
+    'ribbon_size',
+    'keyring_type',
+    'wrapper_type',
+    'wire_size',
+    'wire_type',
+    'yarn_size',
+    'yarn_type',
+    'purchaseMaterials',
+
 ]
 
 MIDDLEWARE = [

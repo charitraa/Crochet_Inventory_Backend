@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from models import beadsSize
-from serializers import breadSizeSerializer
+from .models import beadsSize
+from .serializers import breadSizeSerializer
 
 # Create your views here.
 
@@ -19,3 +19,8 @@ class BeadsView(APIView):
       return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 
+class BreadDeleteView(APIView):
+  def delete(self, request, pk):
+    bread = beadsSize.objects.get(pk=pk)
+    bread.delete()
+    return Response(status=204)

@@ -45,22 +45,19 @@ class UserCreateSerializer(serializers.ModelSerializer):
         )
         return user
 
-class AddUserSerializer(serializers.ModelSerializer):
+class AdminAddUserSerializer(serializers.ModelSerializer):
     """
     Serializer for user registration with all required fields.
     """
-    username = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
-    password = serializers.CharField(write_only=True, min_length=8, required=True)
     full_name = serializers.CharField(required=True)
     phone_number = serializers.CharField(required=True)
     address = serializers.CharField(required=True)
-    profile_pic = serializers.ImageField(required=False)
     role = serializers.ChoiceField(choices=[('admin', 'Admin'), ('general', 'General')], write_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'full_name', 'phone_number', 'address', 'profile_pic', 'role']
+        fields = ['id', 'email', 'full_name', 'phone_number', 'address', 'role']
 
     def create(self, validated_data):
 
@@ -70,15 +67,11 @@ class AddUserSerializer(serializers.ModelSerializer):
         """
         if User.objects.filter(email=validated_data['email']).exists():
             raise serializers.ValidationError({'email': 'A user with this email already exists.'})
-        if User.objects.filter(username=validated_data['username']).exists():
-            raise serializers.ValidationError({'username': 'A user with this username already exists.'})
 
         role = validated_data.pop('role')  # Extract role before creating user
 
         user = User.objects.create_user(
-            username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password'],
             full_name=validated_data.get('full_name'),
             phone_number=validated_data.get('phone_number'),
             address=validated_data.get('address'),
