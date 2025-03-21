@@ -4,18 +4,19 @@ from .models import PurchaseMaterial
 class PurchaseMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = PurchaseMaterial
-        fields = ['id', 'material', 'quantity', 'price', 'color', 'size', 'date']
+        fields = ['id', 'material', 'quantity','type', 'price', 'color', 'size', 'date']
 
     def create(self, validated_data):
         material = validated_data.get("material")
         color = validated_data.get("color")
         size = validated_data.get("size")
         quantity = validated_data.get("quantity")
+        type = validated_data.get("type")
         price = validated_data.get("price")
 
         # Check if material with the same color & size exists
         existing_purchase = PurchaseMaterial.objects.filter(
-            material=material, color=color, size=size
+            material=material, color=color, size=size, type=type
         ).first()
 
         if existing_purchase:

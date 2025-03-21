@@ -11,10 +11,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)
+    user_name = serializers.ReadOnlyField(source="user.full_name")
 
     class Meta:
         model = Order
-        fields = ["id", "user", "order_date", "status", "total_price", "items"]
+        fields = ["id", "user","user_name", "order_date", "status", "total_price", "items"]
 
     def create(self, validated_data):
         items_data = validated_data.pop("items")  # Extract items data separately
