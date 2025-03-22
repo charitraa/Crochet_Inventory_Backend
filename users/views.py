@@ -64,10 +64,8 @@ class UserListView(APIView):
         return Response(serializer.data)
 
 
-
-
 class UpdateProfileIcon(APIView):
-    """ Admin view to update user profile picture """
+    """ user profile picture """
     
     def post(self, request, format=None):
         token = request.COOKIES.get('access_token')

@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
 import uuid
+from django.db import models
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
+
 
 
 class UserManager(BaseUserManager):
@@ -63,3 +66,22 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.email = self.email.lower()
         super(User, self).save(*args, **kwargs)
 
+User = get_user_model()
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expired_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"Password reset token for {self.user.email}"
+
+    def is_expired(self):
+        return timezone.now() > self.expired_at
+
+    @staticmethod
+    def generate_token(user):
+        token = uuid.uuid4().hex
+        expiration_time = timezone.now() + timezone.timedelta(hours=1)  # Token expires in 1 hour
+        return PasswordResetToken.objects.create(user=user, token=token, expired_at=expiration_time)

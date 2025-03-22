@@ -27,6 +27,27 @@ class PurchaseMaterialAPIView(APIView):
 
 class PurchaseDeleteView(APIView):
     """Delete a purchase material."""
+    def get(self, request, pk):
+        """Fetch a purchase material by its ID."""
+        try:
+            purchase = PurchaseMaterial.objects.get(pk=pk)
+        except PurchaseMaterial.DoesNotExist:
+            return Response({"message": "Purchase not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = PurchaseMaterialSerializer(purchase)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request, pk):
+        """Update a purchase material by ID."""
+        try:
+            purchase = PurchaseMaterial.objects.get(pk=pk)
+        except PurchaseMaterial.DoesNotExist:
+            return Response({"message": "Purchase not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = PurchaseMaterialSerializer(purchase, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def delete(self, request, pk):
         """Delete a purchase material by ID."""
         try:

@@ -1,3 +1,4 @@
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -6,7 +7,11 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, get_user_model
 from permissions.permissions import LoginRequiredPermission
+from users.models import PasswordResetToken
 from users.serializers import UserCreateSerializer, UserSerializer, UserUpdateSerializer
+from django.core.mail import send_mail
+from users.models import PasswordResetToken
+from django.urls import reverse
 
 
 class LoginView(TokenObtainPairView):
@@ -111,8 +116,37 @@ class UpdateUserView(APIView):
             return Response({"message": "User updated successfully", "data": serializer.data}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ForgetPassword(APIView):
+    """
+    View to send a password reset email to the user.
+    """
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        if not email:
+            return Response({"message": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
+        try:
+            user = User.objects.get(email=email)
+            
+            # Generate reset token
+            reset_token = PasswordResetToken.generate_token(user)
+            
+            # Construct reset URL
+            reset_url = reverse("reset-password", args=[reset_token.token])
 
+            # Send reset email
+            send_mail(
+                subject="Password Reset Request",
+                message=f"Click the link below to reset your password:\n\nhttp://yourfrontend.com{reset_url}",
+                from_email="no-reply@yourdomain.com",
+                recipient_list=[email],
+            )
+
+            return Response({"message": "Password reset email sent successfully"}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"message": "User with given email does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        
 class UserLogoutView(APIView):
     """
     View to log out the user and blacklist the refresh token.

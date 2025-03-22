@@ -17,7 +17,7 @@ urlpatterns = [
     # Endpoint to retrieve a list of all users
     path('all/', UserListView.as_view(), name='user_list'),
 
-    # Endpoint to update a user's profile picture
+    # Endpoint to update a user's profile 
     path('update-profile-icon/', UpdateProfileIcon.as_view(), name='update_profile_icon'),
     path('update-profile/', UserUpdateProfile.as_view(), name='update_profile'),
 
