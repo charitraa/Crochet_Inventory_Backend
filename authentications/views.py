@@ -44,9 +44,10 @@ class LoginView(TokenObtainPairView):
                 key="access_token",
                 value=str(access_token),
                 httponly=True,
-                secure=False,
-                samesite=None
+                secure=True,  # Must be True in production
+                samesite="None"  # Only use "None" when `secure=True`
             )
+
             return response
 
         return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
