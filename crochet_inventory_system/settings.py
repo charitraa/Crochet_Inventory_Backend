@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-^g5bvpa%0p_=_e5bo+6q#o1hfg-a4mnu0+yer%omc=_l_ztwr3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["https://charitra.pythonanywhere.com/"]
+ALLOWED_HOSTS = ["charitra.pythonanywhere.com", "localhost", "127.0.0.1"]
+
 
 
 # Application definition
@@ -155,8 +156,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  
+    "http://localhost:5173",
+    "https://charitra.pythonanywhere.com",
 ]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -181,6 +184,7 @@ SESSION_COOKIE_SECURE = True
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True
 CORS_ALLOW_CREDENTIALS = True
-SESSION_COOKIE_SAMESITE = None
-CSRF_COOKIE_SAMESITE = None
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
+
 
