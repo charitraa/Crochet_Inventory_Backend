@@ -44,7 +44,7 @@ class LoginView(TokenObtainPairView):
                 key="access_token",
                 value=str(access_token),
                 httponly=True,
-                secure=True,
+                secure=False,
                 samesite=None
             )
             return response
