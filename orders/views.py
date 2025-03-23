@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 import jwt
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -27,20 +28,23 @@ class OrderApiViewById(APIView):
     
     def get(self, request, pk, format=None):
         """Fetch an order by its ID"""
-        order = Order.objects.get(pk=pk)
+        order = get_object_or_404(Order, pk=pk)
         serializer = OrderSerializer(order)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
     def put(self, request, pk, format=None):
         """Update an existing order"""
-        order = Order.objects.get(pk=pk)
-        serializer = OrderSerializer(order, data=request.data)
+        order = get_object_or_404(Order, pk=pk)  # Ensure the order exists
+        serializer = OrderSerializer(order, data=request.data, partial=True)  # Allow partial updates
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, pk, format=None):
         """Delete an existing order"""
-        order = Order.objects.get(pk=pk)
+        order = get_object_or_404(Order, pk=pk)  # Ensure the order exists
         order.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
+        return Response({"message": "Order deleted successfully"}, status=status.HTTP_204_NO_CONTENT)

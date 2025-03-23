@@ -1,7 +1,8 @@
 import uuid
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
 from products.models import Product
 
 User = get_user_model()
@@ -33,3 +34,12 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in Order {self.order.id}"
+
+
+# Signal to delete Order when all OrderItems are deleted
+@receiver(post_delete, sender=OrderItem)
+def delete_order_if_empty(sender, instance, **kwargs):
+    """Delete the order if there are no more items left."""
+    order = instance.order
+    if not order.items.exists():
+        order.delete()
