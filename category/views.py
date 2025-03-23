@@ -7,7 +7,7 @@ from permissions.permissions import LoginRequiredPermission, IsSuperuserOrAdmin
 
 class CategoryView(APIView):
     """ Admin Create a new category and view it"""
-    permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
+    permission_classes = [LoginRequiredPermission]
 
     def post(self, request, format=None):
         serializer = AddCategorySerializer(data=request.data)

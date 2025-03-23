@@ -8,7 +8,7 @@ from permissions.permissions import LoginRequiredPermission, IsSuperuserOrAdmin
     
 class ProductView(APIView):
     """ Admin view and create product list """
-    permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
+    permission_classes = [LoginRequiredPermission]
     def get(self, request, format=None):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
@@ -25,7 +25,7 @@ class ProductView(APIView):
     
 class ProductViewById(ProductView):
     """ Admin view and update a product """
-    permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
+    permission_classes = [LoginRequiredPermission]
     def get(self, request, pk, format=None):
         try:
             product = Product.objects.get(pk=pk)

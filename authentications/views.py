@@ -18,6 +18,7 @@ class LoginView(TokenObtainPairView):
     """
     View for user login to obtain access and refresh tokens.
     """
+    
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         password = request.data.get("password")
@@ -121,6 +122,8 @@ class ForgetPassword(APIView):
     """
     View to send a password reset email to the user.
     """
+    permission_classes = [LoginRequiredPermission]
+
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         if not email:

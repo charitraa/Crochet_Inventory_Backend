@@ -1,12 +1,16 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from permissions.permissions import IsSuperuserOrAdmin, LoginRequiredPermission
 from .models import PurchaseMaterial
 from .serializers import PurchaseMaterialSerializer
 
 
 class PurchaseMaterialAPIView(APIView):
     """Handles creating and listing purchase materials."""
+    permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
+
 
     def get(self, request):
         """List all purchased materials (Admin Only)."""
@@ -27,6 +31,8 @@ class PurchaseMaterialAPIView(APIView):
 
 class PurchaseDeleteView(APIView):
     """Delete a purchase material."""
+    permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
+
     def get(self, request, pk):
         """Fetch a purchase material by its ID."""
         try:

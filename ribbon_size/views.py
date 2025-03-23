@@ -2,12 +2,16 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from permissions.permissions import IsSuperuserOrAdmin, LoginRequiredPermission
+
 from .models import ribbonSize
 from .serializers import ribbonSizeSerializer
 
 # Create your views here.
 
 class RibbonView(APIView):
+  permission_classes = [LoginRequiredPermission, IsSuperuserOrAdmin]
+
   def get(self, request):
     beads = ribbonSize.objects.all()
     serializer = ribbonSizeSerializer(beads, many=True)

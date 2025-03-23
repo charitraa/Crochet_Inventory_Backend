@@ -4,10 +4,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from crochet_inventory_system import settings
+from permissions.permissions import LoginRequiredPermission
 from .models import Order
 from .serializers import OrderSerializer
 
 class OrderAPIView(APIView):
+    permission_classes = [LoginRequiredPermission]
+
     def get(self, request, *args, **kwargs):
         """Fetch all orders"""
         orders = Order.objects.all()
@@ -25,6 +28,8 @@ class OrderAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class OrderApiViewById(APIView):
+    permission_classes = [LoginRequiredPermission]
+
     
     def get(self, request, pk, format=None):
         """Fetch an order by its ID"""
