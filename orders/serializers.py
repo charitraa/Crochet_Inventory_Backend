@@ -35,26 +35,34 @@ class OrderSerializer(serializers.ModelSerializer):
         return order
 
     def update(self, instance, validated_data):
-        """Update order and handle nested order items"""
+            # Extract items from request data
+            items_data = validated_data.pop("items", [])
 
-        instance.status = validated_data.get("status", instance.status)
-        instance.order_date = validated_data.get("order_date", instance.order_date)
+            # Update other order fields
+            instance.user = validated_data.get("user", instance.user)
+            instance.total_price = validated_data.get("total_price", instance.total_price)
+            instance.save()
 
-        # Handle Order Items Update
-        items_data = validated_data.pop("items", None)
-        if items_data is not None:
-            instance.items.all().delete()  # Delete existing items
+            # Update or create items
+            existing_items = {item.product.id: item for item in instance.items.all()}  # Get existing items
 
-            total_price = 0
             for item_data in items_data:
                 product = item_data.get("product")
-                quantity = item_data.get("quantity")
-                price = float(item_data.get("price"))
+                quantity = item_data.get("quantity", 1)
+                price = float(item_data.get("price", 0))
 
-                OrderItem.objects.create(order=instance, product=product, quantity=quantity, price=price)
-                total_price += price * quantity
+                if product.id in existing_items:
+                    # Update existing item
+                    order_item = existing_items[product.id]
+                    order_item.quantity = quantity
+                    order_item.price = price
+                    order_item.save()
+                else:
+                    # Create new item
+                    OrderItem.objects.create(order=instance, product=product, quantity=quantity, price=price)
 
-            instance.total_price = total_price  # Update total price
+            # Recalculate total price
+            instance.total_price = sum(item.price * item.quantity for item in instance.items.all())
+            instance.save()
 
-        instance.save()
-        return instance
+            return instance

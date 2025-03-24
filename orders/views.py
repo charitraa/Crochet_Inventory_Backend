@@ -40,7 +40,7 @@ class OrderApiViewById(APIView):
     def put(self, request, pk, format=None):
         """Update an existing order"""
         order = get_object_or_404(Order, pk=pk)  # Ensure the order exists
-        serializer = OrderSerializer(order, data=request.data, partial=True)  # Allow partial updates
+        serializer = OrderSerializer(order, data=request.data)  # Allow partial updates
 
         if serializer.is_valid():
             serializer.save()
@@ -50,6 +50,7 @@ class OrderApiViewById(APIView):
 
     def delete(self, request, pk, format=None):
         """Delete an existing order"""
-        order = get_object_or_404(Order, pk=pk)  # Ensure the order exists
+        order = Order.objects.get(pk=pk)
+        # order = get_object_or_404(Order, pk=pk)  # Ensure the order exists
         order.delete()
         return Response({"message": "Order deleted successfully"}, status=status.HTTP_204_NO_CONTENT)

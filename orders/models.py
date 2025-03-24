@@ -16,11 +16,12 @@ class Order(models.Model):
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name="orders")  # If order is from website
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True, related_name="orders"
+    )
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default="pending")
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-
     def __str__(self):
         return f"Order {self.id} - {self.user.username}"
 
@@ -36,10 +37,10 @@ class OrderItem(models.Model):
         return f"{self.quantity} x {self.product.name} in Order {self.order.id}"
 
 
-# Signal to delete Order when all OrderItems are deleted
-@receiver(post_delete, sender=OrderItem)
-def delete_order_if_empty(sender, instance, **kwargs):
-    """Delete the order if there are no more items left."""
-    order = instance.order
-    if not order.items.exists():
-        order.delete()
+# # # Signal to delete Order when all OrderItems are deleted
+# @receiver(post_delete, sender=OrderItem)
+# def delete_order_if_empty(sender, instance, **kwargs):
+#     """Delete the order if there are no more items left."""
+#     order = instance.order
+#     if order.items.count() == 0:  # Ensure there are no remaining items
+#         order.delete()
