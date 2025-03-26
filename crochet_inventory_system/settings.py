@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^g5bvpa%0p_=_e5bo+6q#o1hfg-a4mnu0+yer%omc=_l_ztwr3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["charitra.pythonanywhere.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 
@@ -156,9 +156,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "https://charitraa.github.io/Crochet-Inventory-System/",
-    "https://charitra.pythonanywhere.com",
+    "http://localhost:5174",
+    "http://127.0.0.1:8000",
 ]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
