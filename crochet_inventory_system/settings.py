@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-^g5bvpa%0p_=_e5bo+6q#o1hfg-a4mnu0+yer%omc=_l_ztwr3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1","charitra.pythonanywhere.com",]
 
 
 
@@ -156,8 +156,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
-    "https://takris-crochet.netlify.app",
-    "https://charitra.pythonanywhere.com",
+    "https://takris-crochet.netlify.app/",
+    "https://charitra.pythonanywhere.com/",
 ]
 
 
