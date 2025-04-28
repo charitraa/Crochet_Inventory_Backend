@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'yarn_size',
     'yarn_type',
     'purchaseMaterials',
+    'forget_passwords',
 
 ]
 
@@ -156,8 +157,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
-    "https://takris-crochet.netlify.app/",
-    "https://charitra.pythonanywhere.com/",
+    "https://takris-crochet.netlify.app",
+    "https://charitra.pythonanywhere.com",
 ]
 
 
@@ -188,3 +189,14 @@ CORS_ALLOW_CREDENTIALS = True
 SESSION_COOKIE_SAMESITE = None
 CSRF_COOKIE_SAMESITE = None
 
+# Email Backend for development (using console email backend for testing)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For local testing, replace with actual in prod
+DEFAULT_FROM_EMAIL = 'jesishkhadka@gmail.com'
+
+# Or for production, you can set up an SMTP backend
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.example.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'jesishkhadka@gmail.com'
+# EMAIL_HOST_PASSWORD = 'ksgv kybc ydty mrtz'

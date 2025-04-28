@@ -42,6 +42,8 @@ urlpatterns = [
     path('yarn_size/', include('yarn_size.urls')),
     path('yarn_type/', include('yarn_type.urls')),
     path('purchase_material/', include('purchaseMaterials.urls')),
+    path('password/', include('forget_passwords.urls')),
+
     path('', RouterDetailsView.as_view(), name='router_details'),
    
 ]
